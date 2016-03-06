@@ -230,7 +230,7 @@ namespace bsDD.NET.Model.Objects {
   [XmlTypeAttribute(Namespace="http://peregrine.catenda.no/objects",TypeName="ifdConcept")]
   [SoapTypeAttribute(Namespace="http://peregrine.catenda.no/objects",TypeName="ifdConcept")]
   [XmlRootAttribute(Namespace="http://peregrine.catenda.no/objects",ElementName="IfdConcept")]
-  public partial class IfdConcept : bsDD.NET.Model.Objects.IfdConBase {
+  public partial class IfdConcept : IfdConBase {
 
     private IfdConceptTypeEnum _conceptType;
     private List<IfdName> _shortNames;
@@ -250,7 +250,6 @@ namespace bsDD.NET.Model.Objects {
         this._conceptType = value;
       }
     }
-
     /// <summary>
     ///  Property for the XML serializer indicating whether the "ConceptType" property should be included in the output.
     /// </summary>
@@ -272,7 +271,7 @@ namespace bsDD.NET.Model.Objects {
     /// </summary>
     [XmlElementAttribute(ElementName="shortNames",Namespace="")]
     [SoapElementAttribute(ElementName="shortNames")]
-    public List<bsDD.NET.Model.Objects.IfdName> ShortNames {
+    public List<IfdName> ShortNames {
       get {
         return this._shortNames;
       }
@@ -285,7 +284,7 @@ namespace bsDD.NET.Model.Objects {
     /// </summary>
     [XmlElementAttribute(ElementName="lexemes",Namespace="")]
     [SoapElementAttribute(ElementName="lexemes")]
-    public List<bsDD.NET.Model.Objects.IfdName> Lexemes {
+    public List<IfdName> Lexemes {
       get {
         return this._lexemes;
       }
@@ -298,7 +297,7 @@ namespace bsDD.NET.Model.Objects {
     /// </summary>
     [XmlElementAttribute(ElementName="illustrations",Namespace="")]
     [SoapElementAttribute(ElementName="illustrations")]
-    public List<bsDD.NET.Model.Objects.IfdIllustration> Illustrations {
+    public List<IfdIllustration> Illustrations {
       get {
         return this._illustrations;
       }

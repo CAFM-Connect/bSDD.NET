@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using bsDD.NET.Model.Objects;
-
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace bsDD.NET.Client
 {
@@ -28,10 +29,10 @@ namespace bsDD.NET.Client
             { 
                 bsdd _bsdd = new bsdd(email, password);
                 Console.WriteLine("Connected to bsDD: "+_bsdd.BaseUrl);
-                Console.WriteLine("Session: " + _bsdd.Session.Guid);
-                Console.WriteLine("User: " + _bsdd.Session.User.Name+ " ("+_bsdd.Session.User.PreferredOrganization+")");
-                Console.WriteLine("Group: " + _bsdd.Session.User.MemberOf.Name);
-                Console.WriteLine("Role: " + _bsdd.Session.User.Role);
+                Console.WriteLine("Session:           " + _bsdd.Session.Guid);
+                Console.WriteLine("User:              " + _bsdd.Session.User.Name+ " ("+_bsdd.Session.User.PreferredOrganization+")");
+                Console.WriteLine("Group:             " + _bsdd.Session.User.MemberOf.Name);
+                Console.WriteLine("Role:              " + _bsdd.Session.User.Role);
                 Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++");
                 string mode;
                 do
@@ -56,10 +57,10 @@ namespace bsDD.NET.Client
                                 Console.WriteLine("++++++++");
                                 foreach (IfdName name in Names.IfdName)
                                 {
-                                    Console.WriteLine("IfdName.Guid:" + name.Guid);
-                                    Console.WriteLine("IfdName.Language:" + name.Language.LanguageCode+" ()"+ name.Language.NameInSelf);
-                                    Console.WriteLine("IfdName.LanguageFamily:" + name.LanguageFamily);
-                                    Console.WriteLine("IfdName.NameType:" + name.NameType);
+                                    Console.WriteLine("IfdName.Guid:           " + name.Guid);
+                                    Console.WriteLine("IfdName.Language:       " + name.Language.LanguageCode+" ()"+ name.Language.NameInSelf);
+                                    Console.WriteLine("IfdName.LanguageFamily: " + name.LanguageFamily);
+                                    Console.WriteLine("IfdName.NameType:       " + name.NameType);
                                     Console.WriteLine("++++++++");
                                 }
                             }
@@ -74,16 +75,30 @@ namespace bsDD.NET.Client
                             else
                             {
                                 Console.WriteLine(Concepts.IfdConcept.Count.ToString() + " result(s) found");
-                                Console.WriteLine("++++++++");
-                                foreach (IfdConcept concept in Concepts.IfdConcept)
+                                
+                                foreach (IfdConcept concept in Concepts.IfdConcept.OrderByDescending(x=>x.VersionDate))
                                 {
-                                    Console.WriteLine("IfdConcept.Guid:" + concept.Guid);
-                                    if (concept.ShortNames!=null) foreach(IfdName shortname in concept.ShortNames) Console.WriteLine("IfdConcept.ShortNames:" + shortname.Guid + " / " + shortname.Language.LanguageCode + " / " + shortname.Name);
-                                    if (concept.FullNames != null) foreach (IfdName fullname in concept.FullNames) Console.WriteLine("IfdConcept.FullNames:" + fullname.Guid + " / " + fullname.Language.LanguageCode + " / " + fullname.Name);
-                                    if (concept.Definitions != null) foreach (IfdDescription description in concept.Definitions) Console.WriteLine("IfdConcept.Definitions:" + description.Guid + " / " + description.Language.LanguageCode + " / " + description.Description);
+                                    WriteToColoredConsole("IfdConcept.Guid:        " + concept.Guid, ConsoleColor.Blue, ConsoleColor.White);
+                                    WriteToColoredConsole("IfdConcept.ConceptType: " + concept.ConceptType);
+                                    WriteToColoredConsole("IfdConcept.Status:      " + concept.Status);
+                                    WriteToColoredConsole("IfdConcept.VersionId:   " + concept.VersionId);
+                                    CultureInfo ci = new CultureInfo("de-DE");
+                                    WriteToColoredConsole("IfdConcept.VersionDate: " + concept.VersionDate.ToString(ci));
 
-                                    Console.WriteLine("IfdConcept.ConceptType:" + concept.ConceptType);
-                                    Console.WriteLine("++++++++");
+                                    if (concept.FullNames != null)
+                                        foreach (IfdName fullname in concept.FullNames.OrderBy(x=>x.Language.LanguageCode))
+                                        {
+                                            WriteToColoredConsole("LanguageCode:           " + fullname.Language.LanguageCode, ConsoleColor.Yellow, ConsoleColor.Black);
+
+                                            WriteToColoredConsole("IfdConcept.FullNames:   " + fullname.Guid + " / " + fullname.Name, ConsoleColor.DarkGray, ConsoleColor.Black);
+                                            if (concept.ShortNames != null)
+                                                foreach (IfdName shortname in concept.ShortNames)
+                                                    if (shortname.Language.Guid==fullname.Language.Guid) WriteToColoredConsole("IfdConcept.ShortNames:  " + shortname.Guid + " / " + shortname.Name);
+                                            if (concept.Definitions != null)
+                                                foreach (IfdDescription description in concept.Definitions)
+                                                    if (description.Language.Guid==fullname.Language.Guid) WriteToColoredConsole("IfdConcept.Definitions: " + description.Guid + " / " + " / " + Regex.Replace(description.Description, @"\r\n?|\n", " "));
+
+                                        }
                                 }
                             }
                             break;
@@ -97,6 +112,7 @@ namespace bsDD.NET.Client
                 } while (mode != "ex");
 
                 Console.ReadLine();
+                Console.ResetColor();
             }
         }
 
@@ -137,6 +153,14 @@ namespace bsDD.NET.Client
             System.Console.WriteLine();
 
             return new string(pass.Reverse().ToArray());
+        }
+
+        public static void WriteToColoredConsole(string text,ConsoleColor backgroundcolor= ConsoleColor.Gray, ConsoleColor foregroundcolor= ConsoleColor.Black)
+        {
+            Console.BackgroundColor = backgroundcolor;
+            Console.ForegroundColor = foregroundcolor;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
 
     }
