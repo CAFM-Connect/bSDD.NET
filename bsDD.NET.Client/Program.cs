@@ -10,7 +10,6 @@ namespace bsDD.NET.Client
     {
         static void Main(string[] args)
         {
-
             Console.WriteLine("bsDD.NET started");
             Console.WriteLine("bsDD.NET is s simple example to connect to buildingSMART Data Dictionary via C#");
             Console.WriteLine("For further information look at http://bsdd.buildingsmart.org/docs/");
@@ -39,6 +38,7 @@ namespace bsDD.NET.Client
                 {
                     Console.WriteLine("What do you want to do?");
                     Console.WriteLine("Press sn to search for names");
+                    Console.WriteLine("Press co to search for concepts");
                     Console.WriteLine("Press ex to exit");
                     mode = Console.ReadLine();
                     switch (mode)
@@ -46,8 +46,8 @@ namespace bsDD.NET.Client
                         case "sn":
                             Console.WriteLine("Now, you can search in the dictionary");
                             Console.Write("Please enter a search phrase for a name: ");
-                            string searchstring = Console.ReadLine();
-                            IfdNameList Names = _bsdd.SearchNames(searchstring);
+                            string searchnamestring = Console.ReadLine();
+                            IfdNameList Names = _bsdd.SearchNames(searchnamestring);
                             if (Names== null)
                                 Console.WriteLine("no result could be found in this search, please try another name");
                             else
@@ -60,6 +60,29 @@ namespace bsDD.NET.Client
                                     Console.WriteLine("IfdName.Language:" + name.Language.LanguageCode+" ()"+ name.Language.NameInSelf);
                                     Console.WriteLine("IfdName.LanguageFamily:" + name.LanguageFamily);
                                     Console.WriteLine("IfdName.NameType:" + name.NameType);
+                                    Console.WriteLine("++++++++");
+                                }
+                            }
+                            break;
+                        case "co":
+                            Console.WriteLine("Now, you can search in the dictionary");
+                            Console.Write("Please enter a search phrase for a concept: ");
+                            string searchconceptstring = Console.ReadLine();
+                            IfdConceptList Concepts = _bsdd.SearchConcepts(searchconceptstring);
+                            if (Concepts == null)
+                                Console.WriteLine("no result could be found in this search, please try another name");
+                            else
+                            {
+                                Console.WriteLine(Concepts.IfdConcept.Count.ToString() + " result(s) found");
+                                Console.WriteLine("++++++++");
+                                foreach (IfdConcept concept in Concepts.IfdConcept)
+                                {
+                                    Console.WriteLine("IfdConcept.Guid:" + concept.Guid);
+                                    if (concept.ShortNames!=null) foreach(IfdName shortname in concept.ShortNames) Console.WriteLine("IfdConcept.ShortNames:" + shortname.Guid + " / " + shortname.Language.LanguageCode + " / " + shortname.Name);
+                                    if (concept.FullNames != null) foreach (IfdName fullname in concept.FullNames) Console.WriteLine("IfdConcept.FullNames:" + fullname.Guid + " / " + fullname.Language.LanguageCode + " / " + fullname.Name);
+                                    if (concept.Definitions != null) foreach (IfdDescription description in concept.Definitions) Console.WriteLine("IfdConcept.Definitions:" + description.Guid + " / " + description.Language.LanguageCode + " / " + description.Description);
+
+                                    Console.WriteLine("IfdConcept.ConceptType:" + concept.ConceptType);
                                     Console.WriteLine("++++++++");
                                 }
                             }

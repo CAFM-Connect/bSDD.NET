@@ -66,5 +66,12 @@ namespace bsDD.NET
             return response.Data;
         }
 
+        public IfdConceptList SearchConcepts(string searchstring)
+        {
+            var request = new RestRequest("/IfdConcept/search/" + searchstring, Method.GET);
+            var response = restclient.Execute<IfdConceptList>(request);
+            return response.Data;
+        }
+
     }
 }
