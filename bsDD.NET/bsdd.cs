@@ -23,10 +23,13 @@ namespace bsDD.NET
 
         public IfdLanguageList Languages { get; set; }
 
-        public bsdd(string email, string password)
+        public bsdd(string email, string password, bool testserver = false)
         {
             Protocol= "http";
-            Domain = "bsdd.buildingsmart.org";
+            if (testserver)
+                Domain= "test.bsdd.buildingsmart.org";
+            else
+                Domain = "bsdd.buildingsmart.org";
             BaseUrl = Protocol+"://"+ Domain +"/api/4.0";
             restclient = new RestClient(BaseUrl);
             Session = Login(email, password);

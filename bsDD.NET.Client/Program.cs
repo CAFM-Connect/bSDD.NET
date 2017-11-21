@@ -19,6 +19,8 @@ namespace bsDD.NET.Client
             string email = Console.ReadLine();
             Console.Write("Password:");
             string password = ReadPassword('*');
+            Console.Write("Testserver (j/n):");
+            string testserver = Console.ReadLine();
 
             //Debug, only to debug fast, no need to put in your credentials every time in the console window
             //email = "Put here your bsDD-eMail";
@@ -26,8 +28,10 @@ namespace bsDD.NET.Client
             //Debug
 
             if ((email.Length>1) && (password.Length>1)) //TODO Check Exceptions on empty or invalid credentials
-            { 
-                bsdd _bsdd = new bsdd(email, password);
+            {
+                bool ts = false;
+                if (testserver == "j") ts = true;
+                bsdd _bsdd = new bsdd(email, password,ts);
                 Console.WriteLine("Connected to bsDD: "+_bsdd.BaseUrl);
                 Console.WriteLine("Session:           " + _bsdd.Session.Guid);
                 Console.WriteLine("User:              " + _bsdd.Session.User.Name+ " ("+_bsdd.Session.User.PreferredOrganization+")");

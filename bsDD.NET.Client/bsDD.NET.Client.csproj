@@ -45,9 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bsDD.NET\bsDD.NET.csproj">
+    <ProjectReference Include="..\bsDD.NET\bSDD.NET.csproj">
       <Project>{340520a0-b91d-4d22-b8b0-60497efd9507}</Project>
-      <Name>bsDD.NET</Name>
+      <Name>bSDD.NET</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
